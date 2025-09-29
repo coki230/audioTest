@@ -84,6 +84,10 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Input(shape=(124, 129, 1)),
     tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'),
     tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
+    tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation='relu'),
+    tf.keras.layers.BatchNormalization(),
     tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
     tf.keras.layers.Flatten(),
     tf.keras.layers.Dropout(0.25),
@@ -91,6 +95,10 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(8, activation='softmax')
 
 ])
+
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='accuracy', factor=0.5, patience=3, verbose=1)
+early_stop = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, restore_best_weights=True)
+callbacks = [reduce_lr, early_stop]
 
 model.compile(
     optimizer=tf.keras.optimizers.Adam(learning_rate=0.0005),
@@ -108,7 +116,8 @@ history =model.fit(
     t_label,
     validation_split=0.2,
     batch_size=32,
-    epochs=20
+    epochs=100,
+    callbacks=callbacks
 )
 
 print(history.history)

@@ -5,7 +5,8 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from keras.models import load_model
+
 
 def pad_sequences(data, maxlen=16000, value=0):
     ori_len = len(data)
